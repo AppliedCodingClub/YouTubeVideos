@@ -17,7 +17,14 @@ public class SnakeGame {
         snake = new Snake(new Position(40, 12));
         snake.grow(20);
 
+
         environment = new Environment(new Position(0, 0), new Position(79, 23));
+        Obstacle obstacle = new Obstacle();
+        obstacle.addLine(new Position(5, 8), new Position(5, 16));
+        obstacle.addLine(new Position(74, 8), new Position(74, 16));
+        obstacle.addLine(new Position(15, 5), new Position(64, 5));
+        obstacle.addLine(new Position(15, 19), new Position(64, 19));
+        environment.addObstacle(obstacle);
         environment.setSnake(snake);
         environment.addFood(("" + foodCount).charAt(0));
     }
@@ -28,9 +35,11 @@ public class SnakeGame {
             cmd = new String[]{"/bin/sh", "-c", "stty raw </dev/tty"};
             Runtime.getRuntime().exec(cmd).waitFor();
 
+            environment.paint(console);
+
             while (isRunning) {
                 doLoop();
-                pause(200);
+                pause(100);
             }
         } finally {
             cmd = new String[]{"/bin/sh", "-c", "stty sane </dev/tty"};
@@ -55,10 +64,6 @@ public class SnakeGame {
     }
 
     private static void paint() {
-        Food food = environment.getFood();
-        Position foodPosition = food.getPosition();
-        console.putCharAt(food.getLabel(), foodPosition.getY(), foodPosition.getX());
-
         Position head = snake.getHead();
         console.putCharAt('*', head.getY(), head.getX());
         Position neck = snake.getNeck();
@@ -71,7 +76,8 @@ public class SnakeGame {
     }
 
     private static void collisionDetection() {
-        if (environment.isOutOfBounds(snake.getHead()) || snake.isEatingItself()) {
+        Position head = snake.getHead();
+        if (environment.isOutOfBounds(head) || environment.isCollision(head) || snake.isEatingItself()) {
             isRunning = false;
             console.putStringAt("GAME OVER", 1, 1);
         } else if (environment.hasSnakeFoundFood()) {
@@ -82,16 +88,15 @@ public class SnakeGame {
                 console.putStringAt("YOU WIN", 1, 1);
             } else {
                 environment.addFood(("" + foodCount).charAt(0));
+                environment.paint(console);
             }
         }
     }
 
     private static void readPressedKey() throws IOException {
         keyPressed = "";
-        if (System.in.available() > 0) {
-            while (System.in.available() > 0) {
-                keyPressed += System.in.read();
-            }
+        while (System.in.available() > 0) {
+            keyPressed += System.in.read();
         }
     }
 

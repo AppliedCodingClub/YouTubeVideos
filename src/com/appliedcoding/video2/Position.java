@@ -39,4 +39,10 @@ public class Position {
         Position other = (Position) obj;
         return x == other.getX() && y == other.getY();
     }
+
+    // See: https://stackoverflow.com/questions/919612/mapping-two-integers-to-one-in-a-unique-and-deterministic-way
+    @Override
+    public int hashCode() {
+        return (x + y) * (x + y + 1) / 2 + y;
+    }
 }

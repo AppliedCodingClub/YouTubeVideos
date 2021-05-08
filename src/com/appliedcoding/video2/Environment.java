@@ -1,11 +1,17 @@
 package com.appliedcoding.video2;
 
+import com.appliedcoding.video1.Console;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Environment {
 
     private Food food;
     private Position topLeft;
     private Position bottomRight;
     private Snake snake;
+    private List<Obstacle> obstacles = new ArrayList<>();
 
     public Environment(Position topLeft, Position bottomRight) {
         this.topLeft = topLeft;
@@ -17,6 +23,16 @@ public class Environment {
         int y = head.getY();
 
         return x > bottomRight.getX() || x < topLeft.getX() || y > bottomRight.getY() || y < topLeft.getY();
+    }
+
+    public boolean isCollision(Position head) {
+        for (Obstacle obstacle : obstacles) {
+            if (obstacle.isCollision(head)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean hasSnakeFoundFood() {
@@ -42,9 +58,26 @@ public class Environment {
                     break;
                 }
             }
+            if (!collision) {
+                for (Obstacle obstacle : obstacles) {
+                    if (obstacle.isCollision(foodPosition)) {
+                        collision = true;
+                        break;
+                    }
+                }
+            }
         } while (collision);
 
         food = new Food(foodX, foodY, foodLabel);
+    }
+
+    public void paint(Console console) {
+        for (Obstacle obstacle : obstacles) {
+            obstacle.paint(console);
+        }
+
+        Position foodPosition = food.getPosition();
+        console.putCharAt(food.getLabel(), foodPosition.getY(), foodPosition.getX());
     }
 
     public Food getFood() {
@@ -61,5 +94,17 @@ public class Environment {
 
     public void setSnake(Snake snake) {
         this.snake = snake;
+    }
+
+    public List<Obstacle> getObstacles() {
+        return obstacles;
+    }
+
+    public void setObstacles(List<Obstacle> obstacles) {
+        this.obstacles = obstacles;
+    }
+
+    public void addObstacle(Obstacle obstacle) {
+        obstacles.add(obstacle);
     }
 }
