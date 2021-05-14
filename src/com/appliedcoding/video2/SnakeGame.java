@@ -1,134 +1,153 @@
 package com.appliedcoding.video2;
 
-import com.appliedcoding.video1.Console;
-
 import java.io.IOException;
 
 public class SnakeGame {
 
-    static boolean isRunning = true;
-    static String keyPressed;
-    static Console console = new Console();
-    static Environment environment;
-    static Snake snake;
-    static int foodCount = 1;
+    private boolean isRunning;
+    private String keyPressed;
+    private Console console;
+    private Environment environment;
+    private String nextKey = "";
 
-    static {
-        snake = new Snake(new Position(40, 12));
-        snake.grow(20);
-
-
-        environment = new Environment(new Position(0, 0), new Position(79, 23));
-        Obstacle obstacle = new Obstacle();
-        obstacle.addLine(new Position(5, 8), new Position(5, 16));
-        obstacle.addLine(new Position(74, 8), new Position(74, 16));
-        obstacle.addLine(new Position(15, 5), new Position(64, 5));
-        obstacle.addLine(new Position(15, 19), new Position(64, 19));
-        environment.addObstacle(obstacle);
-        environment.setSnake(snake);
-        environment.addFood(("" + foodCount).charAt(0));
-    }
-
-    public static void main(String[] args) throws IOException, InterruptedException {
-        String[] cmd;
+    public SnakeGame() {
         try {
-            cmd = new String[]{"/bin/sh", "-c", "stty raw </dev/tty"};
-            Runtime.getRuntime().exec(cmd).waitFor();
+            console = new Console();
+            console.enterCharacterMode();
+            console.hideCursor();
+            console.clear();
 
-            environment.paint(console);
+            Position maxScreen = console.detectScreenSize();
+            environment = new Environment(new Position(1, 1), new Position(maxScreen.getX(), maxScreen.getY()));
+            paintInitialState();
 
+            isRunning = true;
             while (isRunning) {
                 doLoop();
                 pause(100);
             }
+
+            console.gotoXY(1, maxScreen.getY());
+            console.showCursor();
+            console.setTextColor(Console.ANSI_RESET);
         } finally {
-            cmd = new String[]{"/bin/sh", "-c", "stty sane </dev/tty"};
-            Runtime.getRuntime().exec(cmd).waitFor();
+            console.enterLineMode();
         }
     }
 
-    private static void doLoop() throws IOException {
-        readPressedKey();
-        handlePressedKey();
-
-        paintRemove();
-        calculateNextState();
-        paint();
-        collisionDetection();
-
-        console.printScreen();
+    public static void main(String[] args) {
+        new SnakeGame();
     }
 
-    private static void calculateNextState() {
-        snake.move();
+    private void doLoop() {
+        readKeyPress();
+        handleKeyPress();
+
+        environment.paintRemove(console);
+        environment.calculateNextState();
+        checkEvent();
+        environment.paint(console);
     }
 
-    private static void paint() {
-        Position head = snake.getHead();
-        console.putCharAt('*', head.getY(), head.getX());
-        Position neck = snake.getNeck();
-        console.putCharAt('█', neck.getY(), neck.getX());
+    private void paintInitialState() {
+        environment.paintBackground(console);
+        environment.paint(console);
     }
 
-    private static void paintRemove() {
-        Position tail = snake.getTail();
-        console.putCharAt(' ', tail.getY(), tail.getX());
-    }
+    private void checkEvent() {
+        GameState gameState = environment.checkEvent();
 
-    private static void collisionDetection() {
-        Position head = snake.getHead();
-        if (environment.isOutOfBounds(head) || environment.isCollision(head) || snake.isEatingItself()) {
+        if (gameState.isGameOver()) {
             isRunning = false;
-            console.putStringAt("GAME OVER", 1, 1);
-        } else if (environment.hasSnakeFoundFood()) {
-            snake.grow(10);
-            foodCount++;
-            if (foodCount == 10) {
-                isRunning = false;
-                console.putStringAt("YOU WIN", 1, 1);
-            } else {
-                environment.addFood(("" + foodCount).charAt(0));
-                environment.paint(console);
-            }
+            console.setBackgroundColor(Console.ANSI_YELLOW_BACKGROUND);
+            console.setTextColor(Console.ANSI_RED);
+            console.printAt(" GAME OVER ", 2, 2);
+            console.setBackgroundColor(Console.ANSI_BLUE_BACKGROUND);
+        } else if (gameState.isWin()) {
+            isRunning = false;
+            console.setBackgroundColor(Console.ANSI_YELLOW_BACKGROUND);
+            console.setTextColor(Console.ANSI_RED);
+            console.printAt(" YOU WIN ", 2, 2);
+            console.setBackgroundColor(Console.ANSI_BLUE_BACKGROUND);
         }
     }
 
-    private static void readPressedKey() throws IOException {
-        keyPressed = "";
-        while (System.in.available() > 0) {
-            keyPressed += System.in.read();
-        }
-    }
-
-    private static void handlePressedKey() {
+    private void handleKeyPress() {
+        Snake snake = environment.getSnake();
         switch (keyPressed) {
-            case "27": // ESC
+            case "27":
                 isRunning = false;
-                break;
-
-            case "279168": // left
-                snake.setDirection(Direction.Left);
                 break;
 
             case "279165": // up
                 snake.setDirection(Direction.Up);
                 break;
 
+            case "279166": // down
+                snake.setDirection(Direction.Down);
+                break;
+
             case "279167": // right
                 snake.setDirection(Direction.Right);
                 break;
 
-            case "279166": // down
-                snake.setDirection(Direction.Down);
+            case "279168": // left
+                snake.setDirection(Direction.Left);
                 break;
         }
     }
 
-    private static void pause(int millis) {
+    private void pause(int millis) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            // ignore for now
+            e.printStackTrace();
+            isRunning = false;
         }
+    }
+
+    private void readKeyPress() {
+        try {
+            keyPressed = readOneKey();
+            if (keyPressed.isEmpty()) {
+                if (!nextKey.isEmpty()) {
+                    keyPressed = nextKey;
+                    nextKey = "";
+                }
+            } else { // debounce
+                boolean isLoop = true;
+                while (isLoop) {
+                    String k = readOneKey();
+                    if (!k.equals(keyPressed)) {
+                        nextKey = k;
+                        isLoop = false;
+                        while (System.in.available() > 0) {
+                            System.in.read();
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            isRunning = false;
+        }
+    }
+
+    private String readOneKey() {
+        String result = "";
+        try {
+            if (System.in.available() > 0) {
+                result += System.in.read();
+                if (result.equals("27") && System.in.available() >= 2) { // is arrow key?
+                    result += System.in.read();
+                    result += System.in.read();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            isRunning = false;
+        }
+
+        return result;
     }
 }

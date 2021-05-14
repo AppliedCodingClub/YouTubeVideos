@@ -9,55 +9,52 @@ enum Direction {
 
 public class Snake {
 
-    private List<Position> snake = new ArrayList<>();
     private Direction direction = Direction.Right;
+    private List<Position> body = new ArrayList<>();
     private int grow;
 
     public Snake(Position head) {
-        snake.add(head);
+        body.add(head);
+        grow(20);
     }
 
     public void move() {
         Position head = getHead();
         Position newHead;
         switch (direction) {
-            case Up:
+            case Up: //up
                 newHead = new Position(head.getX(), head.getY() - 1);
                 break;
 
-            case Down:
+            case Down: //down
                 newHead = new Position(head.getX(), head.getY() + 1);
                 break;
 
-            case Left:
-                newHead = new Position(head.getX() - 1, head.getY());
-                break;
-
-            case Right:
             default:
+            case Right: //right
                 newHead = new Position(head.getX() + 1, head.getY());
                 break;
+
+            case Left: //left
+                newHead = new Position(head.getX() - 1, head.getY());
+                break;
         }
-        snake.add(0, newHead);
+
+        body.add(0, newHead);
 
         if (grow > 0) {
             grow--;
         } else {
-            snake.remove(snake.size() - 1);
+            body.remove(body.size() - 1);
         }
     }
 
-    public boolean isEatingItself() {
-        Position head = null;
-        for (Position position : snake) {
-            if (head == null) {
-                head = position;
-            } else if (head.equals(position)) {
-                return true;
-            }
-        }
+    public void grow(int amount) {
+        grow += amount;
+    }
 
-        return false;
+    public boolean isGrowing() {
+        return grow > 0;
     }
 
     public void setDirection(Direction newDirection) {
@@ -88,23 +85,32 @@ public class Snake {
         }
     }
 
-    public void grow(int amount) {
-        grow += amount;
-    }
-
-    public List<Position> getBody() {
-        return snake;
-    }
-
     public Position getHead() {
-        return snake.get(0);
-    }
-
-    public Position getNeck() {
-        return snake.get(1);
+        return body.get(0);
     }
 
     public Position getTail() {
-        return snake.get(snake.size() - 1);
+        return body.get(body.size() - 1);
+    }
+
+    public boolean isEatingItself() {
+        return body.lastIndexOf(getHead()) > 0;
+    }
+
+    public List<Position> getBody() {
+        return body;
+    }
+
+    public void paintRemove(Console console) {
+        if (!isGrowing()) {
+            Position tail = getTail();
+            console.printAt(" ", tail.getX(), tail.getY());
+        }
+    }
+
+    public void paint(Console console) {
+        Position head = getHead();
+        console.setTextColor(Console.ANSI_YELLOW);
+        console.printAt("\u2588", head.getX(), head.getY());
     }
 }

@@ -2,11 +2,11 @@ package com.appliedcoding.video2;
 
 public class Food {
 
-    private Position position;
-    private char label;
+    private final Position position;
+    private final char label;
 
-    public Food(int x, int y, char label) {
-        position = new Position(x, y);
+    public Food(Position position, char label) {
+        this.position = position;
         this.label = label;
     }
 
@@ -14,15 +14,12 @@ public class Food {
         return position;
     }
 
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
     public char getLabel() {
         return label;
     }
 
-    public void setLabel(char label) {
-        this.label = label;
+    public void paint(Console console) {
+        console.setTextColor(Console.ANSI_GREEN);
+        console.printAt(String.valueOf(label), position.getX(), position.getY());
     }
 }

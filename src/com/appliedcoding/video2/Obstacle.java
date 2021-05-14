@@ -1,44 +1,48 @@
 package com.appliedcoding.video2;
 
-import com.appliedcoding.video1.Console;
-
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Obstacle {
+    private List<Position> body;
 
-    private Set<Position> obstacle = new HashSet<>();
+    public Obstacle() {
+        body = new ArrayList<>();
+    }
 
-    public void addLine(Position a, Position b) {
-        double aX = a.getX();
-        double aY = a.getY();
-        double bX = b.getX();
-        double bY = b.getY();
+    public void addLine(Position start, Position end) {
+        int startX = start.getX();
+        int endX = end.getX();
 
-        int delta = (int) Math.max(Math.abs(aX - bX), Math.abs(aY - bY));
-        double deltaX = (bX - aX) / (double) delta;
-        double deltaY = (bY - aY) / (double) delta;
+        int startY = start.getY();
+        int endY = end.getY();
 
-        for (int i = 0; i <= delta; i++) {
-            Position position = new Position((int) aX, (int) aY);
-            obstacle.add(position);
+        int distX = endX - startX;
+        int distY = endY - startY;
 
-            aX += deltaX;
-            aY += deltaY;
+        int dist = Math.max(Math.abs(distX), Math.abs(distY));
+        double deltaX = (double) distX / (double) dist;
+        double deltaY = (double) distY / (double) dist;
+
+        double x = startX;
+        double y = startY;
+
+        for (int i = 0; i <= dist; i++) {
+            Position position = new Position((int) Math.round(x), (int) Math.round(y));
+            body.add(position);
+
+            x += deltaX;
+            y += deltaY;
         }
     }
 
-    public boolean isCollision(Position head) {
-        return obstacle.contains(head);
-    }
-
-    public Set<Position> getObstacle() {
-        return obstacle;
+    public List<Position> getBody() {
+        return body;
     }
 
     public void paint(Console console) {
-        for (Position position : obstacle) {
-            console.putCharAt('X', position.getY(), position.getX());
+        for (Position position : body) {
+            console.printAt("\u2588", position.getX(), position.getY());
         }
     }
 }
