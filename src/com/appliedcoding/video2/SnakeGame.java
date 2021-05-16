@@ -9,6 +9,7 @@ public class SnakeGame {
     private Console console;
     private Environment environment;
     private String nextKey = "";
+    private Position maxScreen;
 
     public SnakeGame() {
         try {
@@ -17,9 +18,9 @@ public class SnakeGame {
             console.hideCursor();
             console.clear();
 
-            Position maxScreen = console.detectScreenSize();
-            environment = new Environment(new Position(1, 1), new Position(maxScreen.getX(), maxScreen.getY()));
-            paintInitialState();
+            maxScreen = console.detectScreenSize();
+            environment = new Environment(new Position(1, 1), new Position(maxScreen.getX(), 2 * maxScreen.getY()));
+            environment.paintInitialState(console);
 
             isRunning = true;
             while (isRunning) {
@@ -44,13 +45,8 @@ public class SnakeGame {
         handleKeyPress();
 
         environment.paintRemove(console);
-        environment.calculateNextState();
+        environment.moveSnake();
         checkEvent();
-        environment.paint(console);
-    }
-
-    private void paintInitialState() {
-        environment.paintBackground(console);
         environment.paint(console);
     }
 
@@ -61,14 +57,20 @@ public class SnakeGame {
             isRunning = false;
             console.setBackgroundColor(Console.ANSI_YELLOW_BACKGROUND);
             console.setTextColor(Console.ANSI_RED);
-            console.printAt(" GAME OVER ", 2, 2);
+            int x = maxScreen.getX() / 2;
+            int y = maxScreen.getY() / 8;
+            console.printAt(" GAME OVER ", x - 5, y);
             console.setBackgroundColor(Console.ANSI_BLUE_BACKGROUND);
         } else if (gameState.isWin()) {
             isRunning = false;
             console.setBackgroundColor(Console.ANSI_YELLOW_BACKGROUND);
             console.setTextColor(Console.ANSI_RED);
-            console.printAt(" YOU WIN ", 2, 2);
+            int x = maxScreen.getX() / 2;
+            int y = maxScreen.getY() / 8;
+            console.printAt(" YOU WIN ", x - 4, y);
             console.setBackgroundColor(Console.ANSI_BLUE_BACKGROUND);
+        } else if (gameState.hasFoundFood()) {
+            environment.paintFood(console);
         }
     }
 
@@ -109,8 +111,8 @@ public class SnakeGame {
     private void readKeyPress() {
         try {
             keyPressed = readOneKey();
-            if (keyPressed.isEmpty()) {
-                if (!nextKey.isEmpty()) {
+            if (keyPressed.isEmpty()) { // no key from System.in
+                if (!nextKey.isEmpty()) { // we have nextKey from previous time?
                     keyPressed = nextKey;
                     nextKey = "";
                 }
@@ -118,7 +120,7 @@ public class SnakeGame {
                 boolean isLoop = true;
                 while (isLoop) {
                     String k = readOneKey();
-                    if (!k.equals(keyPressed)) {
+                    if (!k.equals(keyPressed)) { // new key after debounce?
                         nextKey = k;
                         isLoop = false;
                         while (System.in.available() > 0) {

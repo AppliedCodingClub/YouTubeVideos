@@ -10,11 +10,12 @@ public class Console {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m"; // ESC [ 31 m
     public static final String ANSI_BRIGHT_RED = "\u001B[91m"; // ESC [ 91 m
+    public static final String ANSI_SALMON_RED = "\u001B[38;5;203m"; // ESC [ 38;5;203 m
+    public static final String ANSI_SALMON_RED_BACKGROUND = "\u001B[48;5;203m"; // ESC [ 48;5;203 m
     public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
     public static final String ANSI_YELLOW_BACKGROUND = "\u001B[103m";
-    public static final String ANSI_YELLOW = "\u001B[93m";
+    public static final String ANSI_BRIGHT_YELLOW = "\u001B[38;5;226m"; // ESC [ 38;5;226 m
     public static final String ANSI_GREEN = "\u001B[32m"; // ESC [ 32 m
-    public static final String ANSI_WHITE = "\u001B[97m"; // ESC [ 97 m
 
     public Position readCurrentPosition() {
         try {

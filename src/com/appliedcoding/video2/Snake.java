@@ -100,17 +100,4 @@ public class Snake {
     public List<Position> getBody() {
         return body;
     }
-
-    public void paintRemove(Console console) {
-        if (!isGrowing()) {
-            Position tail = getTail();
-            console.printAt(" ", tail.getX(), tail.getY());
-        }
-    }
-
-    public void paint(Console console) {
-        Position head = getHead();
-        console.setTextColor(Console.ANSI_YELLOW);
-        console.printAt("\u2588", head.getX(), head.getY());
-    }
 }
