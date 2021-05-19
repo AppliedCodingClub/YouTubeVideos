@@ -1,4 +1,4 @@
-package com.appliedcoding.video2;
+package com.appliedcoding.snakegame;
 
 public class GameState {
     private boolean isGameOver;

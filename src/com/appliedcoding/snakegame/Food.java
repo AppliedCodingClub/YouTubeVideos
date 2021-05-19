@@ -1,6 +1,6 @@
-package com.appliedcoding.video2;
+package com.appliedcoding.snakegame;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Food {
@@ -9,9 +9,7 @@ public class Food {
     private final char label;
 
     public Food(Position positionUpper, Position positionLower, char label) {
-        position = new ArrayList<>(2);
-        position.add(positionUpper);
-        position.add(positionLower);
+        position = Arrays.asList(positionUpper, positionLower);
         this.label = label;
     }
 

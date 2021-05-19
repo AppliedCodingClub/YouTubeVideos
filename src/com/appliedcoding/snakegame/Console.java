@@ -1,4 +1,4 @@
-package com.appliedcoding.video2;
+package com.appliedcoding.snakegame;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -16,6 +16,7 @@ public class Console {
     public static final String ANSI_YELLOW_BACKGROUND = "\u001B[103m";
     public static final String ANSI_BRIGHT_YELLOW = "\u001B[38;5;226m"; // ESC [ 38;5;226 m
     public static final String ANSI_GREEN = "\u001B[32m"; // ESC [ 32 m
+    public static final String ANSI_WHITE = "\u001B[37m";
 
     public Position readCurrentPosition() {
         try {

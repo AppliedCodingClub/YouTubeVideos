@@ -1,4 +1,4 @@
-package com.appliedcoding.video2;
+package com.appliedcoding.snakegame;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,36 +25,47 @@ public class Environment {
         Obstacle obstacle = new Obstacle();
         addObstacle(obstacle);
 
-        double minX = topLeft.getX();
-        double maxX = bottomRight.getX();
-        double minY = topLeft.getY();
-        double maxY = bottomRight.getY();
-        double sizeX = maxX - minX + 1;
-        double sizeY = maxY - minY + 1;
-        double halfX = sizeX / 2.0;
-        double halfY = sizeY / 2.0;
-        double quarterY = sizeY / 4.0;
-        double eighthX = sizeX / 8.0;
-        double tenthX = sizeX / 10.0;
-        double tenthY = sizeY / 10.0;
-        double sixteenthX = sizeX / 16.0;
-        double sixteenthY = sizeY / 16.0;
+        float minX = topLeft.getX();
+        float maxX = bottomRight.getX();
+        float minY = topLeft.getY();
+        float maxY = bottomRight.getY();
+        float distX = maxX - minX;
+        float distY = maxY - minY;
+        float halfX = distX / 2f;
+        float halfY = distY / 2f;
+        float quarterY = distY / 4f;
+        float eighthX = distX / 8f;
+        float tenthX = distX / 10f;
+        float tenthY = distY / 10f;
+        float sixteenthX = distX / 16f;
+        float sixteenthY = distY / 16f;
 
-        obstacle.addLine(new Position((int) sixteenthX, (int) Math.max(2, tenthY)),
-                new Position((int) halfX, (int) Math.min(4 * tenthY, halfY - 3)));
-        obstacle.addLine(new Position((int) halfX, (int) Math.min(4 * tenthY, halfY - 3)),
-                new Position((int) (maxX - sixteenthX), (int) Math.max(2, tenthY)));
+        float midX = minX + halfX;
 
-        obstacle.addLine(new Position((int) eighthX, (int) (halfY - 1)),
-                new Position((int) (maxX - eighthX), (int) (halfY - 1)));
+        // V
+        obstacle.addLineMirrorH(new Position(Math.round(minX + sixteenthX), Math.round(Math.max(2, minY + tenthY))),
+                new Position(Math.round(midX - 0.1f), Math.round(Math.min(minY + 4 * tenthY, halfY - 1))),
+                (int) maxX);
 
-        obstacle.addLine(new Position((int) tenthX, (int) (maxY - quarterY)),
-                new Position((int) (4 * tenthX), (int) (maxY - quarterY)));
-        obstacle.addLine(new Position((int) (maxX - 4 * tenthX), (int) (maxY - quarterY)),
-                new Position((int) (maxX - tenthX), (int) (maxY - quarterY)));
+        // horizontal middle
+        obstacle.addLine(new Position(Math.round(minX + eighthX), Math.round(minY + halfY)),
+                new Position(Math.round(maxX - eighthX), Math.round(minY + halfY)));
 
-        obstacle.addLine(new Position((int) halfX, (int) (maxY - 4 * tenthY)),
-                new Position((int) halfX, (int) (maxY - sixteenthY)));
+        // horizontal low left
+        obstacle.addLine(new Position(Math.round(minX + tenthX), Math.round(maxY - quarterY)),
+                new Position(Math.round(minX + 4 * tenthX), Math.round(maxY - quarterY)));
+
+        // horizontal low right
+        obstacle.addLine(new Position(Math.round(maxX - 4 * tenthX), Math.round(maxY - quarterY)),
+                new Position(Math.round(maxX - tenthX), Math.round(maxY - quarterY)));
+
+        // vertical low
+        obstacle.addLine(new Position(Math.round(midX - 0.1f), Math.round(maxY - 4 * tenthY)),
+                new Position(Math.round(midX - 0.1f), Math.round(maxY - sixteenthY)));
+        if (distX % 2 == 1) {
+            obstacle.addLine(new Position(Math.round(midX + 0.1f), Math.round(maxY - 4 * tenthY)),
+                    new Position(Math.round(midX + 0.1f), Math.round(maxY - sixteenthY)));
+        }
     }
 
     public void paintInitialState(Console console) {
@@ -85,7 +96,6 @@ public class Environment {
 
     public void paint(Console console) {
         Position head = snake.getHead();
-        List<Position> body = snake.getBody();
 
         String s;
         int x = head.getX();
@@ -93,7 +103,7 @@ public class Environment {
 
         if (y % 2 == 1) { // odd line --> upper
             Position lower = new Position(x, y + 1);
-            if (body.contains(lower)) { // is snake below?
+            if (snake.contains(lower)) { // is snake below?
                 s = "\u2588"; // full block █
             } else if (isObstacleAt(lower)) { // is obstacle below?
                 console.setBackgroundColor(Console.ANSI_SALMON_RED_BACKGROUND);
@@ -103,7 +113,7 @@ public class Environment {
             }
         } else { // even line --> lower
             Position upper = new Position(x, y - 1);
-            if (body.contains(upper)) { // is snake above?
+            if (snake.contains(upper)) { // is snake above?
                 s = "\u2588"; // full block █
             } else if (isObstacleAt(upper)) { // is obstacle above?
                 console.setBackgroundColor(Console.ANSI_SALMON_RED_BACKGROUND);
@@ -122,13 +132,12 @@ public class Environment {
         if (!snake.isGrowing()) {
             String s = " ";
             Position tail = snake.getTail();
-            List<Position> body = snake.getBody();
             int x = tail.getX();
             int y = tail.getY();
 
             if (y % 2 == 1) { // odd line --> upper
                 Position lower = new Position(x, y + 1);
-                if (body.contains(lower)) { // is snake below?
+                if (snake.contains(lower)) { // is snake below?
                     s = "\u2584"; // lower half ▄
                 } else if (isObstacleAt(lower)) { // is obstacle below?
                     console.setTextColor(Console.ANSI_SALMON_RED);
@@ -136,7 +145,7 @@ public class Environment {
                 }
             } else { // even line --> lower
                 Position upper = new Position(x, y - 1);
-                if (body.contains(upper)) { // is snake above?
+                if (snake.contains(upper)) { // is snake above?
                     s = "\u2580"; // upper half ▀
                 } else if (isObstacleAt(upper)) { // is obstacle above?
                     console.setTextColor(Console.ANSI_SALMON_RED);
@@ -182,20 +191,6 @@ public class Environment {
         return x < topLeft.getX() || x > bottomRight.getX() || y < topLeft.getY() || y > bottomRight.getY();
     }
 
-    public boolean checkCollision() {
-        return isOutOfBounds() || snake.isEatingItself() || isObstacleAt(snake.getHead());
-    }
-
-    private boolean isObstacleAt(Position position) {
-        for (Obstacle obstacle : obstacles) {
-            if (obstacle.getBody().contains(position)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public void addFood() {
         Position positionUpper;
         Position positionLower;
@@ -211,11 +206,10 @@ public class Environment {
                 positionLower = new Position(foodX, foodY + 1);
             }
 
-            isLoop = snake.getBody().contains(positionUpper) || snake.getBody().contains(positionLower);
+            isLoop = snake.contains(positionUpper) || snake.contains(positionLower);
             if (!isLoop) {
                 for (Obstacle obstacle : obstacles) {
-                    if (obstacle.getBody().contains(positionUpper) ||
-                            obstacle.getBody().contains(positionLower)) {
+                    if (obstacle.contains(positionUpper) || obstacle.contains(positionLower)) {
                         isLoop = true;
                         break;
                     }
@@ -233,19 +227,33 @@ public class Environment {
         food = new Food(positionUpper, positionLower, label);
     }
 
+    public boolean checkCollision() {
+        return isOutOfBounds() || snake.isEatingItself() || isObstacleAt(snake.getHead());
+    }
+
     public Food getFood() {
         return food;
+    }
+
+    public Snake getSnake() {
+        return snake;
     }
 
     public boolean hasFoundFood() {
         return food.getPosition().contains(snake.getHead());
     }
 
-    public void moveSnake() {
-        snake.move();
+    private boolean isObstacleAt(Position position) {
+        for (Obstacle obstacle : obstacles) {
+            if (obstacle.contains(position)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public Snake getSnake() {
-        return snake;
+    public void moveSnake() {
+        snake.move();
     }
 }

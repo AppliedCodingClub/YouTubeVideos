@@ -1,4 +1,4 @@
-package com.appliedcoding.video2;
+package com.appliedcoding.snakegame;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,19 @@ public class Snake {
     public Snake(Position head) {
         body.add(head);
         grow(20);
+    }
+
+
+    public boolean contains(Position position) {
+        return body.contains(position);
+    }
+
+    public void grow(int amount) {
+        grow += amount;
+    }
+
+    public boolean isGrowing() {
+        return grow > 0;
     }
 
     public void move() {
@@ -47,14 +60,6 @@ public class Snake {
         } else {
             body.remove(body.size() - 1);
         }
-    }
-
-    public void grow(int amount) {
-        grow += amount;
-    }
-
-    public boolean isGrowing() {
-        return grow > 0;
     }
 
     public void setDirection(Direction newDirection) {
@@ -95,9 +100,5 @@ public class Snake {
 
     public boolean isEatingItself() {
         return body.lastIndexOf(getHead()) > 0;
-    }
-
-    public List<Position> getBody() {
-        return body;
     }
 }

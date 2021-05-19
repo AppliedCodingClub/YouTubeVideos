@@ -1,4 +1,4 @@
-package com.appliedcoding.video2;
+package com.appliedcoding.snakegame;
 
 import java.io.IOException;
 
@@ -59,7 +59,7 @@ public class SnakeGame {
             console.setTextColor(Console.ANSI_RED);
             int x = maxScreen.getX() / 2;
             int y = maxScreen.getY() / 8;
-            console.printAt(" GAME OVER ", x - 5, y);
+            console.printAt(" GAME OVER ", x - 4, y);
             console.setBackgroundColor(Console.ANSI_BLUE_BACKGROUND);
         } else if (gameState.isWin()) {
             isRunning = false;
@@ -67,7 +67,7 @@ public class SnakeGame {
             console.setTextColor(Console.ANSI_RED);
             int x = maxScreen.getX() / 2;
             int y = maxScreen.getY() / 8;
-            console.printAt(" YOU WIN ", x - 4, y);
+            console.printAt(" YOU WIN ", x - 3, y);
             console.setBackgroundColor(Console.ANSI_BLUE_BACKGROUND);
         } else if (gameState.hasFoundFood()) {
             environment.paintFood(console);
