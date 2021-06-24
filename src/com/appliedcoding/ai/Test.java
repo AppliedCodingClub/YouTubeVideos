@@ -1,7 +1,7 @@
 package com.appliedcoding.ai;
 
-import com.appliedcoding.snakegame.io.Console;
-import com.appliedcoding.snakegame.utils.Utils;
+import com.appliedcoding.io.Console;
+import com.appliedcoding.utils.Utils;
 
 import java.util.Random;
 

@@ -1,6 +1,6 @@
-package com.appliedcoding.snakegame.utils;
+package com.appliedcoding.utils;
 
-import com.appliedcoding.snakegame.io.Console;
+import com.appliedcoding.io.Console;
 
 import java.io.PrintStream;
 import java.util.Arrays;

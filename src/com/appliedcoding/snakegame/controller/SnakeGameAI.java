@@ -1,15 +1,15 @@
 package com.appliedcoding.snakegame.controller;
 
 import com.appliedcoding.ai.NeuralNetwork;
+import com.appliedcoding.io.Console;
 import com.appliedcoding.snakegame.config.Configuration;
 import com.appliedcoding.snakegame.config.SavedState;
 import com.appliedcoding.snakegame.exception.SnakeException;
-import com.appliedcoding.snakegame.io.Console;
 import com.appliedcoding.snakegame.model.PopulationState;
 import com.appliedcoding.snakegame.model.PopulationType;
 import com.appliedcoding.snakegame.model.Position;
-import com.appliedcoding.snakegame.utils.Utils;
 import com.appliedcoding.snakegame.view.Canvas;
+import com.appliedcoding.utils.Utils;
 
 import java.io.IOException;
 

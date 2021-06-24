@@ -1,15 +1,15 @@
 package com.appliedcoding.snakegame.controller;
 
+import com.appliedcoding.io.Console;
+import com.appliedcoding.io.KeyboardUtils;
 import com.appliedcoding.snakegame.config.Configuration;
-import com.appliedcoding.snakegame.io.Console;
-import com.appliedcoding.snakegame.io.KeyboardUtils;
 import com.appliedcoding.snakegame.model.Direction;
 import com.appliedcoding.snakegame.model.Environment;
 import com.appliedcoding.snakegame.model.GameState;
 import com.appliedcoding.snakegame.model.Position;
 import com.appliedcoding.snakegame.model.Snake;
-import com.appliedcoding.snakegame.utils.Utils;
 import com.appliedcoding.snakegame.view.Canvas;
+import com.appliedcoding.utils.Utils;
 
 import java.io.IOException;
 

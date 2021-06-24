@@ -1,4 +1,4 @@
-package com.appliedcoding.snakegame.io;
+package com.appliedcoding.io;
 
 import java.io.IOException;
 

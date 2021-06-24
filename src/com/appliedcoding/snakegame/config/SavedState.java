@@ -2,7 +2,7 @@ package com.appliedcoding.snakegame.config;
 
 import com.appliedcoding.ai.NeuralNetwork;
 import com.appliedcoding.snakegame.exception.SnakeException;
-import com.appliedcoding.snakegame.utils.XmlSerializer;
+import com.appliedcoding.utils.XmlSerializer;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

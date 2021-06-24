@@ -1,7 +1,7 @@
-package com.appliedcoding.snakegame.utils;
+package com.appliedcoding.utils;
 
+import com.appliedcoding.io.Console;
 import com.appliedcoding.snakegame.exception.SnakeException;
-import com.appliedcoding.snakegame.io.Console;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

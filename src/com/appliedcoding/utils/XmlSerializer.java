@@ -1,4 +1,4 @@
-package com.appliedcoding.snakegame.utils;
+package com.appliedcoding.utils;
 
 import com.appliedcoding.snakegame.exception.SnakeException;
 

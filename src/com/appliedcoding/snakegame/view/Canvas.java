@@ -1,7 +1,7 @@
 package com.appliedcoding.snakegame.view;
 
+import com.appliedcoding.io.Console;
 import com.appliedcoding.snakegame.config.Configuration;
-import com.appliedcoding.snakegame.io.Console;
 import com.appliedcoding.snakegame.model.Environment;
 import com.appliedcoding.snakegame.model.Food;
 import com.appliedcoding.snakegame.model.GameState;

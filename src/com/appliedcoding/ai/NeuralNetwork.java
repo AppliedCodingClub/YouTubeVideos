@@ -1,8 +1,8 @@
 package com.appliedcoding.ai;
 
 import com.appliedcoding.snakegame.exception.SnakeException;
-import com.appliedcoding.snakegame.utils.AIUtils;
-import com.appliedcoding.snakegame.utils.XmlSerializer;
+import com.appliedcoding.utils.AIUtils;
+import com.appliedcoding.utils.XmlSerializer;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

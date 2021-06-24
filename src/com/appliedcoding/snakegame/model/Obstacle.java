@@ -1,7 +1,5 @@
 package com.appliedcoding.snakegame.model;
 
-import com.appliedcoding.snakegame.io.Console;
-
 import java.util.HashSet;
 import java.util.Set;
 

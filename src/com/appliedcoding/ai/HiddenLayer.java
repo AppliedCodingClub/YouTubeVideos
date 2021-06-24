@@ -1,6 +1,6 @@
 package com.appliedcoding.ai;
 
-import com.appliedcoding.snakegame.utils.AIUtils;
+import com.appliedcoding.utils.AIUtils;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
