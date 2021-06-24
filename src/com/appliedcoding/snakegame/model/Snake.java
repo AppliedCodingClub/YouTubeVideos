@@ -1,23 +1,20 @@
-package com.appliedcoding.snakegame;
+package com.appliedcoding.snakegame.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-enum Direction {
-    Up, Down, Left, Right
-}
-
 public class Snake {
 
-    private Direction direction = Direction.Right;
-    private List<Position> body = new ArrayList<>();
+    private Direction direction;
+    private List<Position> body;
     private int grow;
 
     public Snake(Position head) {
+        direction = Direction.Right;
+        body = new ArrayList<>();
         body.add(head);
-        grow(20);
+        grow(3);
     }
-
 
     public boolean contains(Position position) {
         return body.contains(position);
@@ -53,40 +50,12 @@ public class Snake {
                 break;
         }
 
-        body.add(0, newHead);
+        body.add(0, newHead); // insert new head on top of the body
 
-        if (grow > 0) {
-            grow--;
-        } else {
+        if (grow > 0) { // is snake growing?
+            grow--; // then don't remove its tail
+        } else { // otherwise remove the tip of its tail
             body.remove(body.size() - 1);
-        }
-    }
-
-    public void setDirection(Direction newDirection) {
-        switch (direction) {
-            case Up:
-                if (newDirection != Direction.Down) {
-                    direction = newDirection;
-                }
-                break;
-
-            case Down:
-                if (newDirection != Direction.Up) {
-                    direction = newDirection;
-                }
-                break;
-
-            case Right:
-                if (newDirection != Direction.Left) {
-                    direction = newDirection;
-                }
-                break;
-
-            case Left:
-                if (newDirection != Direction.Right) {
-                    direction = newDirection;
-                }
-                break;
         }
     }
 
@@ -100,5 +69,41 @@ public class Snake {
 
     public boolean isEatingItself() {
         return body.lastIndexOf(getHead()) > 0;
+    }
+
+    public boolean isSnakeAt(Position position) {
+        return body.contains(position);
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction newDirection) {
+        switch (direction) {
+            case Up:
+//                if (newDirection != Direction.Down) {
+                direction = newDirection;
+//                }
+                break;
+
+            case Down:
+//                if (newDirection != Direction.Up) {
+                direction = newDirection;
+//                }
+                break;
+
+            case Right:
+//                if (newDirection != Direction.Left) {
+                direction = newDirection;
+//                }
+                break;
+
+            case Left:
+//                if (newDirection != Direction.Right) {
+                direction = newDirection;
+//                }
+                break;
+        }
     }
 }

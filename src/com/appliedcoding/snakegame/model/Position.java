@@ -1,4 +1,4 @@
-package com.appliedcoding.snakegame;
+package com.appliedcoding.snakegame.model;
 
 public class Position {
 

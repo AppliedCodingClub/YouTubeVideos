@@ -1,4 +1,6 @@
-package com.appliedcoding.snakegame;
+package com.appliedcoding.snakegame.io;
+
+import com.appliedcoding.snakegame.model.Position;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -74,9 +76,17 @@ public class Console {
         System.out.print(String.format("\u001B[%d;%dH", y, x)); // CSI n ; m H
     }
 
+    public void printAt(String message, int x, int y, Position offset) {
+        printAt(message, x + offset.getX(), y + offset.getY());
+    }
+
     public void printAt(String message, int x, int y) {
         gotoXY(x, y);
         System.out.print(message);
+    }
+
+    public void printAt(String message, Position screenPosition) {
+        printAt(message, screenPosition.getX(), screenPosition.getY());
     }
 
     public void hideCursor() {

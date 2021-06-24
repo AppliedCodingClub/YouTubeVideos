@@ -1,37 +1,16 @@
-package com.appliedcoding.snakegame;
+package com.appliedcoding.snakegame.model;
+
+import com.appliedcoding.snakegame.io.Console;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class Obstacle {
+
     private Set<Position> body;
 
     public Obstacle() {
         body = new HashSet<>();
-    }
-
-    public void paint(Console console) {
-        console.setTextColor(Console.ANSI_SALMON_RED);
-        for (Position position : body) {
-            String s;
-            int x = position.getX();
-            int y = position.getY();
-            if (y % 2 == 1) { // odd line --> upper
-                if (body.contains(new Position(x, y + 1))) { // is obstacle below?
-                    s = "\u2588"; // full block █
-                } else {
-                    s = "\u2580"; // upper half ▀
-                }
-            } else { // even line --> lower
-                if (body.contains(new Position(x, y - 1))) { // is obstacle above?
-                    s = "\u2588"; // full block █
-                } else {
-                    s = "\u2584"; // lower half ▄
-                }
-            }
-
-            console.printAt(s, x, (int) Math.round(y / 2.0));
-        }
     }
 
     public void addLine(Position start, Position end) {
@@ -88,5 +67,9 @@ public class Obstacle {
 
     public boolean contains(Position position) {
         return body.contains(position);
+    }
+
+    public Set<Position> getBody() {
+        return body;
     }
 }
