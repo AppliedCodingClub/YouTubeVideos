@@ -19,6 +19,8 @@ public class Console {
     public static final String ANSI_BRIGHT_YELLOW = "\u001B[38;5;226m"; // ESC [ 38;5;226 m
     public static final String ANSI_GREEN = "\u001B[32m"; // ESC [ 32 m
     public static final String ANSI_WHITE = "\u001B[37m";
+    public static final String ANSI_BRIGHT_WHITE = "\u001B[38;5;15m"; // ESC [ 38;5;15 m
+    public static final String ANSI_BRIGHT_WHITE_BACKGROUND = "\u001B[107m"; // ESC [ 107 m
 
     public Position readCurrentPosition() {
         try {
