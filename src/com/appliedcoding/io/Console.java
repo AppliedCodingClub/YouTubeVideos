@@ -74,6 +74,10 @@ public class Console {
         System.out.print("\u001B[2J"); // CSI 2 J
     }
 
+    public void gotoXY(Position screenPosition) {
+        System.out.print(String.format("\u001B[%d;%dH", screenPosition.getY(), screenPosition.getX())); // CSI n ; m H
+    }
+
     public void gotoXY(int x, int y) {
         System.out.print(String.format("\u001B[%d;%dH", y, x)); // CSI n ; m H
     }

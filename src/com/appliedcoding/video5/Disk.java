@@ -10,8 +10,12 @@ public class Disk {
         this.size = size;
     }
 
+    public int getSize() {
+        return size;
+    }
+
     public int getWidth() {
-        return 4 * size + 1;
+        return 2 * size + 1;
     }
 
     public int getHeight() {

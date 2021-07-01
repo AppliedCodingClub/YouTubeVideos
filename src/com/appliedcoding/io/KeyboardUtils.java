@@ -8,7 +8,8 @@ public class KeyboardUtils {
     public static final String C_LOWER_KEY = "" + (int) 'c';
     public static final String ESC_KEY = "27";
     public static final String EQUALS_KEY = "" + (int) '=';
-    public static final String F_KEY = "" + (int) 'f';
+    public static final String F_LOWER_KEY = "" + (int) 'f';
+    public static final String F_UPPER_KEY = "" + (int) 'F';
     public static final String L_KEY = "" + (int) 'l';
     public static final String MINUS_KEY = "" + (int) '-';
     public static final String M_LOWER_KEY = "" + (int) 'm';
@@ -20,6 +21,7 @@ public class KeyboardUtils {
     public static final String R_UPPER_KEY = "" + (int) 'R';
     public static final String SPACE_KEY = "32";
     public static final String T_KEY = "" + (int) 't';
+    public static final String UNDERSCORE_KEY = "" + (int) '_';
 
     private static String nextKey = "";
 
