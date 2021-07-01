@@ -20,6 +20,7 @@ public class CanvasBase {
     private Position bottomRight;
     private int width;
     private int height;
+    private int backgroundColor;
     private int color;
     private int currentColor;
     private int fillColor = -1;
@@ -175,8 +176,8 @@ public class CanvasBase {
     public void rectangle(float x, float y, float width, float height) {
         int x1 = Math.round(x);
         int y1 = Math.round(y);
-        int x2 = Math.round(x + width);
-        int y2 = Math.round(y + height);
+        int x2 = Math.round(x + width - 1);
+        int y2 = Math.round(y + height - 1);
 
         if (x1 > x2) {
             int aux = x1;
@@ -218,7 +219,14 @@ public class CanvasBase {
         String line = new String(chars);
         for (int y = 0; y < height; y++) {
             console.printAt(line, toConsolePosition(0, y));
+            for (int x = 0; x < width; x++) {
+                buffer[x][y] = backgroundColor;
+            }
         }
+    }
+
+    public void printAt(String message, int x, int y) {
+        console.printAt(message, toConsolePosition(x, y));
     }
 
     public void printMessage(String message) {
@@ -229,7 +237,7 @@ public class CanvasBase {
         console.printAt(message, x - message.length() / 2, y);
     }
 
-    private Position toConsolePosition(int x, int y) {
+    protected Position toConsolePosition(int x, int y) {
         return new Position(x + topLeft.getX(), topLeft.getY() + y / 2);
     }
 
@@ -246,13 +254,13 @@ public class CanvasBase {
         setCurrentColor(color);
     }
 
-    public void setBackgroundColor(int color) {
-        console.setBackgroundColor(COLOR_BK_PREFIX + color + COLOR_SUFFIX);
+    public void setBackgroundColor(int ansi8BitColor) {
+        backgroundColor = ansi8BitColor;
+        console.setBackgroundColor(COLOR_BK_PREFIX + ansi8BitColor + COLOR_SUFFIX);
     }
 
     public void setFillColor(int ansi8BitColor) {
         fillColor = ansi8BitColor;
-//        currentColor = fillColor;
     }
 
     public void noFill() {
