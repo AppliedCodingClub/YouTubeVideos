@@ -109,7 +109,7 @@ public class Game {
                 Configuration.CANVAS_ENABLED = !Configuration.CANVAS_ENABLED;
                 break;
 
-            case KeyboardUtils.F_KEY: //one frame forward
+            case KeyboardUtils.F_LOWER_KEY: //one frame forward
                 if (Configuration.PAUSE_ENABLED) {
                     Configuration.PAUSE_ENABLED = false;
                     Configuration.FRAME_BY_FRAME = true;

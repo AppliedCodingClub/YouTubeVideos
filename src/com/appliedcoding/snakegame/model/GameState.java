@@ -9,13 +9,11 @@ public class GameState {
     private int foodCredits = Configuration.FOOD_CREDITS;
     private boolean foundFood;
     private boolean gameOver;
-    //    private List<Direction> moves = new ArrayList<>();
     private int steps;
     private boolean win;
 
+    //http://ceur-ws.org/Vol-2468/p9.pdf
     public double getFitness() {
-//        http://ceur-ws.org/Vol-2468/p9.pdf
-
         if (Configuration.FITNESS_EXPLORATION) {
             return getFitnessForExploration();
         } else {
@@ -26,14 +24,9 @@ public class GameState {
     public double getFitnessForExploration() {
         // training fitness - promotes exploration
         double fitness = steps + foodCount * Configuration.FOOD_CREDITS;
-//        double fitness = steps * steps * Math.pow(2, foodCount);
 
         if (foodCredits == 0) {
             fitness -= 0.95 * steps;
-//        } else if (gameOver) {
-//            fitness *= 0.8;
-//        } else if (win) {
-//            fitness *= 1.2;
         }
 
         return fitness;
@@ -116,12 +109,4 @@ public class GameState {
     public void incFoodCount() {
         foodCount++;
     }
-
-//    public List<Direction> getMoves() {
-//        return moves;
-//    }
-
-//    public void addMove(Direction move) {
-//        moves.add(move);
-//    }
 }
