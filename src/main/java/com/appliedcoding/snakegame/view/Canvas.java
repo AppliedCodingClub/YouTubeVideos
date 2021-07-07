@@ -6,7 +6,7 @@ import com.appliedcoding.snakegame.model.Environment;
 import com.appliedcoding.snakegame.model.Food;
 import com.appliedcoding.snakegame.model.GameState;
 import com.appliedcoding.snakegame.model.Obstacle;
-import com.appliedcoding.snakegame.model.Position;
+import com.appliedcoding.io.Position;
 import com.appliedcoding.snakegame.model.Snake;
 
 import java.util.Arrays;

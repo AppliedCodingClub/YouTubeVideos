@@ -1,7 +1,5 @@
 package com.appliedcoding.io;
 
-import com.appliedcoding.snakegame.model.Position;
-
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

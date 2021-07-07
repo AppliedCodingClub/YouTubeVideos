@@ -3,7 +3,7 @@ package com.appliedcoding.video5;
 import com.appliedcoding.io.CanvasBase;
 import com.appliedcoding.io.Console;
 import com.appliedcoding.io.KeyboardUtils;
-import com.appliedcoding.snakegame.model.Position;
+import com.appliedcoding.io.Position;
 import com.appliedcoding.utils.Utils;
 
 import java.io.IOException;

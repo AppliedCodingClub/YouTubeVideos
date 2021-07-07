@@ -1,7 +1,7 @@
 package com.appliedcoding.video5;
 
 import com.appliedcoding.io.Console;
-import com.appliedcoding.snakegame.model.Position;
+import com.appliedcoding.io.Position;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

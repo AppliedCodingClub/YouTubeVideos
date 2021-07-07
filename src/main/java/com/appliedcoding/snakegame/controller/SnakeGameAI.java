@@ -7,7 +7,7 @@ import com.appliedcoding.snakegame.config.SavedState;
 import com.appliedcoding.snakegame.exception.SnakeException;
 import com.appliedcoding.snakegame.model.PopulationState;
 import com.appliedcoding.snakegame.model.PopulationType;
-import com.appliedcoding.snakegame.model.Position;
+import com.appliedcoding.io.Position;
 import com.appliedcoding.snakegame.view.Canvas;
 import com.appliedcoding.utils.Utils;
 

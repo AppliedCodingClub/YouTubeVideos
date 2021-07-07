@@ -1,5 +1,7 @@
 package com.appliedcoding.snakegame.model;
 
+import com.appliedcoding.io.Position;
+
 import java.util.ArrayList;
 import java.util.List;
 

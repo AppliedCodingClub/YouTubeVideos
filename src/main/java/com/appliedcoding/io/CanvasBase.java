@@ -1,7 +1,5 @@
 package com.appliedcoding.io;
 
-import com.appliedcoding.snakegame.model.Position;
-
 import java.util.Arrays;
 
 /*
@@ -24,6 +22,17 @@ public class CanvasBase {
     private int color;
     private int currentColor;
     private int fillColor = -1;
+    private boolean[][] clipQuadrants = new boolean[][]{
+            {false, false, false, false, true, true, false, true, true}, // 0
+            {false, false, false, true, true, true, true, true, true}, // 1
+            {false, false, false, true, true, false, true, true, false}, // 2
+            {false, true, true, false, true, true, false, true, true}, // 3
+            {true, true, true, false, true, true, true, true, true}, // 4
+            {true, true, false, true, true, false, true, true, false}, // 5
+            {false, true, true, false, true, true, false, false, false}, // 6
+            {true, true, true, true, true, true, false, false, false}, // 7
+            {true, true, false, true, true, false, false, false, false} // 8
+    };
 
     // topLeft, bottomRight - real screen coordinates
     public CanvasBase(Console console, Position topLeft, Position bottomRight) {
@@ -82,23 +91,148 @@ public class CanvasBase {
         console.printAt(s, toConsolePosition(xx, yy));
     }
 
-    public void line(float startX, float startY, float endX, float endY) {
-        float distX = endX - startX;
-        float distY = endY - startY;
+    public void line(float x1, float y1, float x2, float y2) {
+        if (x1 < 0 && x2 < 0 || x1 >= width && x2 >= width ||
+                y1 < 0 && y2 < 0 || y1 >= height && y2 >= height) {
+            return; // line does not intersect canvas
+        }
+
+        float distX = x2 - x1;
+        float distY = y2 - y1;
 
         float steps = Math.max(Math.abs(distX), Math.abs(distY));
-        float stepX = distX / steps;
-        float stepY = distY / steps;
+        float stepX = steps == 0 ? 0 : distX / steps;
+        float stepY = steps == 0 ? 0 : distY / steps;
 
-        float x = startX;
-        float y = startY;
+        float x = x1;
+        float y = y1;
 
-        for (float i = 0; i <= steps; i++) {
+        boolean startInCanvas = x1 >= 0 && x1 < width && y1 >= 0 && y1 < height;
+        boolean endInCanvas = x2 >= 0 && x2 < width && y2 >= 0 && y2 < height;
+
+        //calculate clipping points
+        // x = x1 + i * stepX
+        // y = y1 + i * stepY
+        //
+        // if x=0 then
+        //     i = -x1/stepX
+        //     yP = y1 + (-x1/stepX) * stepY = y1 - x1 * stepY / stepX = y1 - x1 * distY / distX
+        //
+        // if x=width-1 then
+        //     i = (width - x1 - 1) / stepX
+        //     yP = y1 + (width - x1 - 1) * stepY / stepX = y1 + (width - x1 - 1) * distY / distX
+        //
+        // if y=0 then
+        //     i = -y1/stepY
+        //     xP = x1 - y1 * stepX / stepY = x1 - y1 * distX / distY
+        //
+        // if y=height-1 then
+        //     i = (height - 1 - y1) / stepY
+        //     xP = x1 + (height - y1 - 1) * stepX / stepY = x1 + (height - y1 - 1) * distX / distY
+        //
+        // 0 <= xP <= width -1
+        // 0 <= yP <= height - 1
+
+        if (startInCanvas && endInCanvas) { // both start and end IN
+            // line is fully in viewport. no clipping needed
+        } else {
+            float xTop = x1 - y1 * distX / distY; // when y=0
+            float xBottom = x1 + (height - y1 - 1) * distX / distY; // when y=height-1
+            float yLeft = y1 - x1 * distY / distX; // when x=0
+            float yRight = y1 + (width - x1 - 1) * distY / distX; // when x=width-1
+
+            if (startInCanvas) { // start IN, end OUT
+                if (xTop >= 0 && xTop < width && stepY < 0) {
+                    x2 = xTop;
+                    y2 = 0;
+                } else if (xBottom >= 0 && xBottom < width && stepY > 0) {
+                    x2 = xBottom;
+                    y2 = height - 1;
+                } else if (yLeft >= 0 && yLeft < height && stepX < 0) {
+                    x2 = 0;
+                    y2 = yLeft;
+                } else if (yRight >= 0 && yRight < height && stepX > 0) {
+                    x2 = width - 1;
+                    y2 = yRight;
+                }
+            } else if (endInCanvas) { // end IN, start OUT
+                if (xTop >= 0 && xTop < width && stepY > 0) {
+                    x = xTop;
+                    y = 0;
+                } else if (xBottom >= 0 && xBottom < width && stepY < 0) {
+                    x = xBottom;
+                    y = height - 1;
+                } else if (yLeft >= 0 && yLeft < height && stepX > 0) {
+                    x = 0;
+                    y = yLeft;
+                } else if (yRight >= 0 && yRight < height && stepX < 0) {
+                    x = width - 1;
+                    y = yRight;
+                }
+            } else { // both start and end OUT
+                boolean draw = false;
+                if (xTop >= 0 && xTop < width) {
+                    draw = true;
+                    if (stepY > 0) {
+                        x = xTop;
+                        y = 0;
+                    } else {
+                        x2 = xTop;
+                        y2 = 0;
+                    }
+                }
+
+                if (xBottom >= 0 && xBottom < width) {
+                    draw = true;
+                    if (stepY < 0) {
+                        x = xBottom;
+                        y = height - 1;
+                    } else {
+                        x2 = xBottom;
+                        y2 = height - 1;
+                    }
+                }
+
+                if (yLeft >= 0 && yLeft < height) {
+                    draw = true;
+                    if (stepX > 0) {
+                        x = 0;
+                        y = yLeft;
+                    } else {
+                        x2 = 0;
+                        y2 = yLeft;
+                    }
+                }
+
+                if (yRight >= 0 && yRight < height) {
+                    draw = true;
+                    if (stepX < 0) {
+                        x = width - 1;
+                        y = yRight;
+                    } else {
+                        x2 = width - 1;
+                        y2 = yRight;
+                    }
+                }
+
+                if (!draw) {
+                    return;
+                }
+            }
+
+            distX = x2 - x;
+            distY = y2 - y;
+            steps = Math.max(Math.abs(distX), Math.abs(distY));
+        }
+
+        int i = 0;
+        steps = Math.round(steps);
+
+        do {
             plot(x, y);
-
             x += stepX;
             y += stepY;
-        }
+        } while (i++ < steps);
     }
 
     public void ellipse(float xc, float yc, float rx, float ry) {
@@ -107,7 +241,6 @@ public class CanvasBase {
             double t = Math.PI * 2 / n * i;
             int px = (int) Math.round(xc + rx * Math.cos(t));
             int py = (int) Math.round(yc - ry * Math.sin(t));
-            setColor((int) (1 + Math.random() * 254));
             plot(px, py);
         }
     }
@@ -119,15 +252,19 @@ public class CanvasBase {
         dy = 2 * rx * rx * y;
 
         while (dx < dy) {
-            plot((int) (xc + x), (int) (yc + y));
-            plot((int) (xc - x), (int) (yc + y));
-            plot((int) (xc + x), (int) (yc - y));
-            plot((int) (xc - x), (int) (yc - y));
+//            plot((int) (xc + x), (int) (yc + y));
+//            plot((int) (xc - x), (int) (yc + y));
+//            plot((int) (xc + x), (int) (yc - y));
+//            plot((int) (xc - x), (int) (yc - y));
+            plot(xc + x, yc + y);
+            plot(xc - x, yc + y);
+            plot(xc + x, yc - y);
+            plot(xc - x, yc - y);
 
             if (fillColor >= 0) {
                 setCurrentColor(fillColor);
-                line((int) (xc - x), (int) (yc - y + 1), (int) (xc - x), (int) (yc + y - 1));
-                line((int) (xc + x), (int) (yc - y + 1), (int) (xc + x), (int) (yc + y - 1));
+                line(xc - x, yc - y + 1, xc - x, yc + y - 1);
+                line(xc + x, yc - y + 1, xc + x, yc + y - 1);
                 setCurrentColor(color);
             }
 
@@ -147,15 +284,19 @@ public class CanvasBase {
         d2 = ry * ry * (x + 0.5f) * (x + 0.5f) + rx * rx * (y - 1) * (y - 1) - rx * rx * ry * ry;
 
         while (y >= 0) {
-            plot((int) (xc + x), (int) (yc + y));
-            plot((int) (xc - x), (int) (yc + y));
-            plot((int) (xc + x), (int) (yc - y));
-            plot((int) (xc - x), (int) (yc - y));
+//            plot((int) (xc + x), (int) (yc + y));
+//            plot((int) (xc - x), (int) (yc + y));
+//            plot((int) (xc + x), (int) (yc - y));
+//            plot((int) (xc - x), (int) (yc - y));
+            plot(xc + x, yc + y);
+            plot(xc - x, yc + y);
+            plot(xc + x, yc - y);
+            plot(xc - x, yc - y);
 
-            if (fillColor >= 0 && y > 0) {
+            if (fillColor >= 0 && y > 0.5) {
                 setCurrentColor(fillColor);
-                line((int) (xc - x), (int) (yc - y + 1), (int) (xc - x), (int) (yc + y - 1));
-                line((int) (xc + x), (int) (yc - y + 1), (int) (xc + x), (int) (yc + y - 1));
+                line(xc - x, yc - y + 1, xc - x, yc + y - 1);
+                line(xc + x, yc - y + 1, xc + x, yc + y - 1);
                 setCurrentColor(color);
             }
 
@@ -274,5 +415,9 @@ public class CanvasBase {
 
     private void setConsoleColor(int ansi8BitColor) {
         console.setTextColor(COLOR_FG_PREFIX + ansi8BitColor + COLOR_SUFFIX);
+    }
+
+    public Console getConsole() {
+        return console;
     }
 }

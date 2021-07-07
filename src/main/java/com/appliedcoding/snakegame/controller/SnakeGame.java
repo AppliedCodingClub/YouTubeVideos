@@ -6,7 +6,7 @@ import com.appliedcoding.snakegame.config.Configuration;
 import com.appliedcoding.snakegame.model.Direction;
 import com.appliedcoding.snakegame.model.Environment;
 import com.appliedcoding.snakegame.model.GameState;
-import com.appliedcoding.snakegame.model.Position;
+import com.appliedcoding.io.Position;
 import com.appliedcoding.snakegame.model.Snake;
 import com.appliedcoding.snakegame.view.Canvas;
 import com.appliedcoding.utils.Utils;

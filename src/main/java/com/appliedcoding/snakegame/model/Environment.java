@@ -1,5 +1,6 @@
 package com.appliedcoding.snakegame.model;
 
+import com.appliedcoding.io.Position;
 import com.appliedcoding.snakegame.config.Configuration;
 import com.appliedcoding.snakegame.view.Canvas;
 
